@@ -1,0 +1,6 @@
+[submodule "ext/nbl-reflect"]
+	path = ext/nbl-reflect
+	url = https://github.com/Andromeda08/nbl-reflect
+[submodule "ext/vma"]
+	path = ext/vma
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
