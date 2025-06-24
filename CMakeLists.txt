@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30)
-project(nebula_next)
+project(nbl_vulkan)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -9,7 +9,7 @@ add_subdirectory(ext/fmt)
 add_subdirectory(ext/nbl-reflect)
 add_subdirectory(ext/vma)
 
-add_library(nebula_next
+add_library(nbl_vulkan
     include/nbl/VulkanRHI.hpp
     src/VulkanRHI.cpp
     src/vma_IMPL.cpp
@@ -23,14 +23,14 @@ add_library(nebula_next
     include/nbl/Common.hpp
 )
 
-target_link_libraries(nebula_next PUBLIC
+target_link_libraries(nbl_vulkan PUBLIC
     fmt::fmt
     nblReflect
     GPUOpen::VulkanMemoryAllocator
     ${Vulkan_LIBRARIES}
 )
 
-target_include_directories(nebula_next PUBLIC
+target_include_directories(nbl_vulkan PUBLIC
     ./ext/fmt/include
     ./ext/nbl-reflect/include
     ./ext/vma/include
@@ -38,6 +38,6 @@ target_include_directories(nebula_next PUBLIC
     ${Vulkan_INCLUDE_DIRS}
 )
 
-target_compile_definitions(nebula_next PUBLIC
+target_compile_definitions(nbl_vulkan PUBLIC
     VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1
 )
