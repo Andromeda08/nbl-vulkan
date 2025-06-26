@@ -9,6 +9,7 @@ add_library(nbl_vulkan
     src/Extensions.cpp          src/Extensions.hpp
     src/Util.cpp                src/Util.hpp
 
+    src/Barrier.cpp             include/nbl/Barrier.hpp
     src/Buffer.cpp              include/nbl/Buffer.hpp
     src/CommandQueue.cpp        include/nbl/CommandQueue.hpp
     src/Device.cpp              include/nbl/Device.hpp
