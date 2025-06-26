@@ -3,6 +3,7 @@ add_library(nbl_vulkan
 
     include/nbl/Common.hpp
     include/nbl/Frame.hpp
+    include/nbl/IAttachmentSource.hpp
     include/nbl/IWindow.hpp
 
     src/Extensions.cpp          src/Extensions.hpp
@@ -13,6 +14,8 @@ add_library(nbl_vulkan
     src/Device.cpp              include/nbl/Device.hpp
     src/Descriptor.cpp          include/nbl/Descriptor.hpp
     src/Image.cpp               include/nbl/Image.hpp
+    src/RenderPass.cpp          include/nbl/RenderPass.hpp
+    src/Pipeline.cpp            include/nbl/Pipeline.hpp
     src/Swapchain.cpp           include/nbl/Swapchain.hpp
     src/VulkanRHI.cpp           include/nbl/VulkanRHI.hpp
 )

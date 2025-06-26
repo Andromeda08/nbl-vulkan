@@ -8,7 +8,8 @@
 namespace nbl
 {
     Swapchain::Swapchain(const SwapchainCreateInfo& createInfo)
-    : mImageCount(createInfo.imageCount)
+    : IAttachmentSource()
+    , mImageCount(createInfo.imageCount)
     , mWindow(createInfo.pWindow)
     , mDevice(createInfo.pDevice)
     , mInstance(createInfo.instance)
@@ -97,6 +98,11 @@ namespace nbl
             throw std::out_of_range(std::to_string(i));
         }
         return mImageViews[i];
+    }
+
+    vk::ImageView Swapchain::getAttachmentSource() const
+    {
+        return mImageViews[mLastAcquiredIndex];
     }
 
     void Swapchain::createSurface()

@@ -2,6 +2,8 @@
 
 #include <cstdint>
 #include <vulkan/vulkan.hpp>
+
+#include "IAttachmentSource.hpp"
 #include "Util.hpp"
 
 namespace nbl
@@ -18,29 +20,33 @@ namespace nbl
         uint32_t       imageCount {};
     };
 
-    class Swapchain
+    class Swapchain final : public IAttachmentSource
     {
     public:
         nbl_DISABLE_COPY(Swapchain);
         nbl_CI_CTOR(Swapchain, SwapchainCreateInfo);
 
-        ~Swapchain();
+        ~Swapchain() override;
 
         void present(vk::Semaphore waitSemaphore, uint32_t imageIndex) const;
 
         void setScissorViewport(const vk::CommandBuffer& commandList) const;
 
-        vk::SwapchainKHR handle() const { return mSwapchain; }
+        vk::SwapchainKHR getHandle()      const          { return mSwapchain;   }
 
-        float    getAspectRatio() const { return mAspectRatio; }
-        uint32_t getImageCount()  const { return mImageCount; }
+        float            getAspectRatio() const          { return mAspectRatio; }
+        uint32_t         getImageCount()  const          { return mImageCount;  }
+        vk::Extent2D     getExtent()      const          { return mExtent;      }
+        vk::Format       getFormat()      const override { return mFormat;      }
 
-        vk::Extent2D getExtent()   const { return mExtent; }
-        vk::Format   getFormat() const { return mFormat; }
+        Image*           getImage(size_t i)     const;
+        vk::Image        getVkImage(size_t i)   const;
+        vk::ImageView    getImageView(size_t i) const;
 
-        Image*        getImage(size_t i) const;
-        vk::Image     getVkImage(size_t i) const;
-        vk::ImageView getImageView(size_t i) const;
+        /**
+         * @return Image View for the last acquired image.
+         */
+        vk::ImageView getAttachmentSource() const override;
 
     private:
         void createSurface();
@@ -48,6 +54,10 @@ namespace nbl
         void createSwapchain();
         void acquireImages();
         void makeDynamicState();
+
+        friend class RenderPass;
+        friend class VulkanRHI;
+        uint32_t                            mLastAcquiredIndex = 0;
 
         const uint32_t                      mImageCount;
         vk::Extent2D                        mExtent;

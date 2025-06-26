@@ -6,6 +6,12 @@
 
 namespace nbl
 {
+    struct DebugLabelInfo
+    {
+        std::array<float, 3> color;
+        std::string          label;
+    };
+
     struct QueueCreateInfo
     {
         uint32_t    queueFamilyIndex;

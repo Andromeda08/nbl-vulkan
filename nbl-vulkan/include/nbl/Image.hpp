@@ -3,6 +3,8 @@
 #include <string>
 #include <vk_mem_alloc.h>
 #include <vulkan/vulkan.hpp>
+
+#include "IAttachmentSource.hpp"
 #include "Util.hpp"
 
 namespace nbl
@@ -57,7 +59,7 @@ namespace nbl
         Image*            dstImage;
     };
 
-    class Image
+    class Image final : public IAttachmentSource
     {
     public:
         nbl_DISABLE_COPY(Image);
@@ -67,7 +69,7 @@ namespace nbl
 
         static std::unique_ptr<Image> createSwapchainImageWrapper(const SwapchainImageWrapperInfo& createInfo);
 
-        ~Image();
+        ~Image() override;
 
         void updateState(const ImageState& state)
         {
@@ -78,6 +80,13 @@ namespace nbl
          * @note This operation will transition the srcImage to TransferSrcOptimal and dstImage to TransferDstOptimal if necessary.
          */
         void blitImage(const BlitImageInfo& blitInfo);
+
+        /**
+         * @return Default Image View associated with the Image.
+         */
+        vk::ImageView getAttachmentSource() const override { return mImageView;         }
+
+        vk::Format   getFormat()            const override { return mProperties.format; }
 
         const vk::Image&        getImage()      const { return mImage; }
         const vk::ImageView&    getImageView()  const { return mImageView; }

@@ -7,7 +7,8 @@
 namespace nbl
 {
     Image::Image(const ImageCreateInfo& createInfo)
-    : mDevice(createInfo.pDevice)
+    : IAttachmentSource()
+    , mDevice(createInfo.pDevice)
     , mProperties(makeProperties(createInfo))
     , mDebugName(createInfo.debugName)
     {
