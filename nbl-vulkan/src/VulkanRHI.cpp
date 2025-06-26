@@ -75,7 +75,7 @@ namespace nbl
         result = mDevice->getHandle().resetFences(1, &fence);
 
         const auto nextImage = mDevice->getHandle().acquireNextImageKHR(
-            mSwapchain->handle(),std::numeric_limits<uint64_t>::max(),
+            mSwapchain->getHandle(),std::numeric_limits<uint64_t>::max(),
             mImageReady[mCurrentFrame], nullptr).value;
 
         // Store the last acquired index in the Swapchain (used by RenderPass).

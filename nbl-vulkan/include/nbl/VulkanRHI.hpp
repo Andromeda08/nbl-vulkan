@@ -85,6 +85,7 @@ namespace nbl
         Device*       getDevice()        const { return mDevice.get();        }
         CommandQueue* getGraphicsQueue() const { return mGraphicsQueue.get(); }
         CommandQueue* getComputeQueue()  const { return mComputeQueue.get();  }
+        Swapchain*    getSwapchain()     const { return mSwapchain.get();     }
 
     private:
         void createInstance();

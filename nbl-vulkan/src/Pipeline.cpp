@@ -233,13 +233,13 @@ namespace nbl
                 if (auto* attachment = createInfo.pRenderPass->mDepthAttachment.pSource;
                     attachment != nullptr)
                 {
-                    mRenderingInfo.depthFormat(attachment->getFormat());
+                    mRenderingInfo.depthFormat = attachment->getFormat();
                 }
 
                 if (auto* attachment = createInfo.pRenderPass->mStencilAttachment.pSource;
                     attachment != nullptr)
                 {
-                    mRenderingInfo.stencilFormat(attachment->getFormat());
+                    mRenderingInfo.stencilFormat = attachment->getFormat();
                 }
             }
             else
