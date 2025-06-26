@@ -41,6 +41,7 @@ namespace nbl
         bool        isSupported     () const noexcept { return mIsRequested;                      }
         bool        shouldActivate  () const noexcept { return mIsRequested     and mIsSupported; }
         bool        isActive        () const noexcept { return shouldActivate() and mIsEnabled;   }
+        bool        isExtension     () const noexcept { return !mIsCoreFeatureStruct;             }
 
     protected:
         void* mFeatureStructPtr = nullptr;   // For pNext chaining

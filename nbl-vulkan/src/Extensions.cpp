@@ -26,6 +26,7 @@ namespace nbl
     , mIsRequested(requested)
     , mStructInitFn(structInitFn)
     {
+        mIsCoreFeatureStruct = std::string(mExtensionName).contains("VulkanCore");
     }
 
     void VulkanDeviceExtension::postSupportCheck()
@@ -38,7 +39,10 @@ namespace nbl
     void VulkanDeviceExtension::preCreateDevice(vk::DeviceCreateInfo& deviceCreateInfo) const
     {
         if (!shouldActivate()) return;
-        addToNextChain(deviceCreateInfo, mFeatureStructPtr);
+        if (mFeatureStructPtr != nullptr)
+        {
+            addToNextChain(deviceCreateInfo, mFeatureStructPtr);
+        }
     }
 
     void VulkanDeviceExtension::addToNextChain(vk::DeviceCreateInfo& deviceCreateInfo, void* featureInfo)
@@ -176,6 +180,12 @@ namespace nbl
                 {
                     extension->setEnabled();
                 }
+            }
+
+            if (extension->mIsCoreFeatureStruct)
+            {
+                extension->setSupported();
+                extension->setEnabled();
             }
         }
 

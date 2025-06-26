@@ -71,7 +71,7 @@ namespace nbl
             if (extension->shouldActivate())
             {
                 extension->postSupportCheck();
-                if (extension->getExtensionName() != nullptr)
+                if (extension->isExtension())
                 {
                     mDeviceExtensionNames.push_back(extension->getExtensionName());
                 }
@@ -119,24 +119,24 @@ namespace nbl
             .setPQueueCreateInfos(queueCreateInfos.data())
             .setPEnabledFeatures(&deviceFeatures);
 
-        for (const auto& extensions : mDeviceExtensions)
+        for (const auto& extension : mDeviceExtensions)
         {
-            extensions->preCreateDevice(createInfo);
+            extension->preCreateDevice(createInfo);
         }
 
         nbl_VK_TRY(mDevice = mPhysicalDevice.createDevice(createInfo);)
 
-        //mGraphicsQueue = createQueue({
-        //    .queueFamilyIndex = queueGraphics->queueFamilyIndex,
-        //    .queueIndex = 0,
-        //    .name = "Graphics Queue",
-        //});
+        mGraphicsQueue = createQueue({
+            .queueFamilyIndex = queueGraphics->familyIndex,
+            .queueIndex = 0,
+            .name = "Graphics Queue",
+        });
 
-        //mComputeQueue = createQueue({
-        //    .queueFamilyIndex = queueCompute->queueFamilyIndex,
-        //    .queueIndex = 0,
-        //    .name = "Compute Queue",
-        //});
+        mAsyncComputeQueue = createQueue({
+            .queueFamilyIndex = queueCompute->familyIndex,
+            .queueIndex = 0,
+            .name = "Compute Queue",
+        });
     }
 
     void Device::createAllocator()
@@ -150,5 +150,26 @@ namespace nbl
         };
 
         nbl_VK_C_RESULT(vmaCreateAllocator(&createInfo, &mAllocator));
+    }
+
+    std::unique_ptr<Queue> Device::createQueue(const QueueCreateInfo& createInfo) const
+    {
+        vk::Queue queue;
+        nbl_VK_TRY(queue = mDevice.getQueue(createInfo.queueFamilyIndex, createInfo.queueIndex);)
+
+        auto vkQueue = std::make_unique<Queue>();
+        vkQueue->queue = queue,
+        vkQueue->familyIndex = createInfo.queueFamilyIndex,
+        vkQueue->queueIndex = createInfo.queueIndex,
+        vkQueue->name = createInfo.name,
+        vkQueue->device = mDevice,
+        vkQueue->available = true,
+
+        nameObject<vk::Queue>({
+            .debugName = vkQueue->name,
+            .handle    = vkQueue->queue,
+        });
+
+        return vkQueue;
     }
 }
