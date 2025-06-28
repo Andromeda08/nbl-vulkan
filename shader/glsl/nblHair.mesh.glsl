@@ -20,17 +20,17 @@ layout (push_constant) uniform HairConstants {
     vec4     hair_specular;
     int      vertexCount;
     int      strandCount;
+    int      renderingMode;
     int      _pad0;
-    int      _pad1;
     uint64_t vertex_address;
     uint64_t sdesc_address;
 } hair_constants;
 
-layout (buffer_reference, scalar) buffer Vertices { Vertex vertices[]; };
+layout (buffer_reference, scalar) buffer Vertices { HairVertex vertices[]; };
 
-layout (buffer_reference, scalar) buffer StrandDescriptions { StrandDesc descriptions[]; };
+layout (buffer_reference, scalar) buffer StrandDescriptions { StrandDescription descriptions[]; };
 
-layout (set = 0, binding = 1) uniform CameraData {
+layout (set = 0, binding = 0) uniform CameraData {
     mat4  view;
     mat4  proj;
     mat4  view_inverse;
@@ -50,7 +50,7 @@ uint laneID      = gl_LocalInvocationID.x;
 layout (location = 0) out MeshData m_out[];
 
 // Functions ----------------------------
-StrandDesc getStrandDescription(uint id) {
+StrandDescription getStrandDescription(uint id) {
     StrandDescriptions sds = StrandDescriptions(hair_constants.sdesc_address);
     return sds.descriptions[id];
 }
@@ -70,10 +70,10 @@ void main()
     }
 
     // Current [Strand] information
-    uint       current_strandID    = IN.baseID + k;
-    StrandDesc strand_description  = getStrandDescription(current_strandID);
-    uint       strand_vertex_count = strand_description.vertex_count;
-    uint       base_vertex_offset  = strand_description.vertex_offset;
+    uint              current_strandID    = IN.baseID + k;
+    StrandDescription strand_description  = getStrandDescription(current_strandID);
+    uint              strand_vertex_count = strand_description.vertex_count;
+    uint              base_vertex_offset  = strand_description.vertex_offset;
 
     // Current [Strandlet] information
     uint strandletID        = workGroupID - deltaID;

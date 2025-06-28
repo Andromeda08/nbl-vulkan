@@ -18,6 +18,8 @@ namespace nbl
         createBuffers();
 
         mGroupSize = static_cast<uint32_t>(std::floor(getStrandCount() / gHAIR_WORKGROUP_SIZE));
+
+        mTransform.euler = glm::vec3(-90.0f, 0.0f, -45.0f);
     }
 
     void HairModel::loadFile()
@@ -149,6 +151,7 @@ namespace nbl
 
     void HairModel::render(const vk::CommandBuffer& commandBuffer) const
     {
+
         commandBuffer.drawMeshTasksEXT(mGroupSize, 1, 1);
     }
 

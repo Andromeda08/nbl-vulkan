@@ -12,8 +12,8 @@ struct Task {
 
 // Mesh Shader Payload
 struct MeshData {
-    vec4 wPosition;
-    vec4 wTangent;
+    vec4 world_position;
+    vec4 world_tangent;
 };
 
 // Hair Vertex
@@ -22,8 +22,8 @@ struct HairVertex {
 };
 
 struct StrandDescription {
-    int strandId;
-    int vertexCount;
-    int strandletCount;
-    int vertexOffset;
+    int strand_id;
+    int vertex_count;
+    int strandlet_count;
+    int vertex_offset;
 };

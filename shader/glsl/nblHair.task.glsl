@@ -28,8 +28,8 @@ layout (push_constant) uniform HairConstants {
     uint64_t sdesc_address;
 } hair_constants;
 
-layout (buffer_reference, scalar) buffer StrandDescriptions {
-    StrandDesc descriptions[];
+layout (buffer_reference, scalar) buffer StrandDescriptionriptions {
+    StrandDescription descriptions[];
 };
 
 // Input --------------------------------
@@ -42,8 +42,8 @@ taskPayloadSharedEXT Task OUT;
 // Functions ----------------------------
 int getStrandCount() { return hair_constants.strandCount; }
 
-StrandDesc getStrandDescription(uint id) {
-    StrandDescriptions sds = StrandDescriptions(hair_constants.sdesc_address);
+StrandDescription getStrandDescription(uint id) {
+    StrandDescriptionriptions sds = StrandDescriptionriptions(hair_constants.sdesc_address);
     return sds.descriptions[id];
 }
 
@@ -56,7 +56,7 @@ void main()
         return;
     }
 
-    StrandDesc strand_description = getStrandDescription(g_strandID);
+    StrandDescription strand_description = getStrandDescription(g_strandID);
     int        strandlet_count    = strand_description.strandlet_count;
     uint       strand_wg_offset   = subgroupExclusiveAdd(strandlet_count);
 

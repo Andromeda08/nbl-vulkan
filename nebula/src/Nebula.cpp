@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     gApp = App::createApp({
         .windowInfo = {
             .title            = name,
-            .resolutionPreset =  wsi::WindowResolutionPreset::w1600_h900,
+            .resolutionPreset =  wsi::WindowResolutionPreset::w2560_h1440,
         },
         .rhiInfo    = {
             .validation      = true,

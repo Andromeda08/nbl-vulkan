@@ -203,7 +203,8 @@ namespace nbl
 
         if (createInfo.pipelineType == PipelineType::Graphics)
         {
-            auto& graphicsPipelineState = createInfo.graphicsPipelineState;
+            auto& graphicsPipelineState = pipelineInfo.graphicsPipelineState;
+            graphicsPipelineState.update();
 
             auto graphicsPipelineCreateInfo = vk::GraphicsPipelineCreateInfo()
                 .setPInputAssemblyState(&graphicsPipelineState.inputAssemblyState)
@@ -247,9 +248,7 @@ namespace nbl
                 mRenderingInfo = createInfo.renderingInfo;
             }
 
-            vk::PipelineRenderingCreateInfo renderingInfo;
-
-            renderingInfo = vk::PipelineRenderingCreateInfo()
+            const auto renderingInfo = vk::PipelineRenderingCreateInfo()
                 .setColorAttachmentCount(mRenderingInfo.colorAttachmentFormats.size())
                 .setPColorAttachmentFormats(mRenderingInfo.colorAttachmentFormats.data())
                 .setDepthAttachmentFormat(mRenderingInfo.depthFormat)

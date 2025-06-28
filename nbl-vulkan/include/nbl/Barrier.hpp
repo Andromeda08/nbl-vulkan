@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <vulkan/vulkan.hpp>
+#include "Image.hpp"
 
 namespace nbl
 {

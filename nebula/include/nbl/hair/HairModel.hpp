@@ -2,9 +2,15 @@
 
 #include <memory>
 #include <string>
+
 #include <cyHairFile.h>
+
+#include <nbl/Buffer.hpp>
+#include <nbl/VulkanRHI.hpp>
+
 #include "HairCommon.h"
 #include "Util.hpp"
+#include "math/Transform.hpp"
 
 namespace vk
 {
@@ -13,8 +19,6 @@ namespace vk
 
 namespace nbl
 {
-    class Buffer;
-    class VulkanRHI;
 
     struct HairModelCreateInfo
     {
@@ -43,7 +47,6 @@ namespace nbl
 
         Buffer* getStrandDescriptionsBuffer() const { return mStrandDescriptionsBuffer.get(); }
 
-
     private:
         void loadFile();
 
@@ -52,6 +55,9 @@ namespace nbl
         void processStrands();
 
         void createBuffers();
+
+        friend class HairPipeline;
+        friend class HairUIComponent;
 
         // ================================
         // Hair Meta- and Geometry Data
@@ -75,8 +81,13 @@ namespace nbl
         // ================================
         // Rendering Options
         // ================================
+        Transform                       mTransform          = {};
+        glm::vec4                       mDiffuse            = { 0.32549f, 0.23921f, 0.20784f, 1.0f }; // rgb(83, 61, 53)
+        glm::vec4                       mSpecular           = { 0.41568f, 0.30588f, 0.21960f, 1.0f }; // rgb(106, 78, 56)
+
         uint32_t                        mGroupSize          = 0;
-        uint32_t                        mGroupSizeOverride  = 0;
+        int32_t                         mGroupSizeOverride  = 0;
+        bool                            mEnableOverride     = false;
         HairRenderingMode               mRenderingMode      = HairRenderingMode::Normal;
 
         VulkanRHI*                      mRHI = nullptr;

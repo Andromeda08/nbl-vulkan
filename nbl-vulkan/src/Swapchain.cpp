@@ -140,6 +140,10 @@ namespace nbl
         mExtent.width = std::clamp(width, min.width, max.width);
         mExtent.height = std::clamp(height, min.height, max.height);
 
+        mArea = vk::Rect2D()
+            .setExtent(mExtent)
+            .setOffset({ 0, 0 });
+
         // Surface Format & ColorSpace
         if (surfaceFormats.empty())
         {

@@ -5,27 +5,11 @@
 #extension GL_GOOGLE_include_directive : enable
 #include "inc/hairCommon.glsl"
 
-struct LightParameters
-{
-    vec4  position;
-    vec4  color;
-    float intensity;
-    int   isActive;
-    int   _pad0;
-    int   _pad1;
-};
-
-#define MAX_LIGHTS            10
-
-layout(early_fragment_tests) in;
+// layout(early_fragment_tests) in;
 
 layout (location = 0) in MeshData IN;
 
-layout (set = 0, binding = 0) uniform LightUniform {
-    LightParameters lights[MAX_LIGHTS];
-} lightUniform;
-
-layout (set = 0, binding = 1) uniform CameraUniform {
+layout (set = 0, binding = 0) uniform CameraUniform {
     mat4  view;
     mat4  proj;
     mat4  view_inverse;
@@ -41,8 +25,8 @@ layout (push_constant) uniform HairConstants {
     vec4     hair_specular;
     int      vertexCount;
     int      strandCount;
+    int      renderingMode;
     int      _pad0;
-    int      _pad1;
     uint64_t vertex_address;
     uint64_t sdesc_address;
 } hair_constants;
@@ -91,5 +75,6 @@ void main()
     vec3 V = normalize(camera.eye.xyz - IN.world_position.xyz);
 
     vec3 color = kajiya_kay(hair_constants.hair_diffuse.xyz, hair_constants.hair_specular.xyz, 16.0, T, L, V);
-    out_color = vec4(color, 0.75);
+    // out_color = vec4(color, 1.0);
+    out_color = vec4(1.0);
 }

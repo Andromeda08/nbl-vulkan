@@ -1,14 +1,14 @@
 #pragma once
 
 #include <cstdint>
-#include <stdexcept>
 #include <span>
+#include <stdexcept>
 #include <glm/glm.hpp>
 
 namespace nbl
 {
-    static consteval int32_t gHAIR_WORKGROUP_SIZE     = 32;
-    static consteval int32_t gHAIR_MAX_STRANDLET_SIZE = gHAIR_WORKGROUP_SIZE;
+    static constexpr int32_t gHAIR_WORKGROUP_SIZE     = 32;
+    static constexpr int32_t gHAIR_MAX_STRANDLET_SIZE = gHAIR_WORKGROUP_SIZE;
 
     enum class HairRenderingMode : int32_t
     {

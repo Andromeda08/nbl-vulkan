@@ -37,6 +37,7 @@ namespace nbl
         float            getAspectRatio() const          { return mAspectRatio; }
         uint32_t         getImageCount()  const          { return mImageCount;  }
         vk::Extent2D     getExtent()      const          { return mExtent;      }
+        vk::Rect2D       getArea()        const          { return mArea;        }
         vk::Format       getFormat()      const override { return mFormat;      }
 
         Image*           getImage(size_t i)     const;
@@ -61,10 +62,11 @@ namespace nbl
 
         const uint32_t                      mImageCount;
         vk::Extent2D                        mExtent;
+        vk::Rect2D                          mArea;
         float                               mAspectRatio {0.0f};
         vk::Format                          mFormat {vk::Format::eB8G8R8A8Unorm};
         vk::ColorSpaceKHR                   mColorSpace {vk::ColorSpaceKHR::eSrgbNonlinear};
-        vk::PresentModeKHR                  mPresentMode {vk::PresentModeKHR::eFifo};
+        vk::PresentModeKHR                  mPresentMode {vk::PresentModeKHR::eMailbox};
         vk::SurfaceTransformFlagBitsKHR     mCurrentTransform {};
         vk::SurfaceKHR                      mSurface;
         vk::SwapchainKHR                    mSwapchain;
