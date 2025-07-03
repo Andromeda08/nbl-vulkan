@@ -21,8 +21,8 @@ g_target_vulkan_env = "vulkan1.4"                                           # De
 g_excluded_extensions = ["hlsli", "inc.glsl", ".spv"]                       # List of extensions to ignore when searching for shaders
 g_excluded_dirs = ["inc", "include"]                                        # List of subdirectories to include when searching for shaders
 g_copy_target_dirs = [                                                      # List of directories to copy output shaders to
-    "../cmake-build-debug",
-    "../cmake-build-release",
+    "../cmake-build-debug/nebula",
+    "../cmake-build-release/nebula",
 ]
 
 g_sep = os.sep
