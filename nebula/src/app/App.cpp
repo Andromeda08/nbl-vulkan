@@ -13,10 +13,12 @@ namespace nbl
     public:
         HairSelectorComponent(
             const std::vector<std::unique_ptr<HairModel>>& hairModels,
-            HairModel** activeModel)
+            HairModel**                                    activeModel,
+            HairPipeline*                                  hairPipeline)
         : UIComponent()
         , mHairModels(hairModels)
         , pActiveModel(activeModel)
+        , mHairPipeline(hairPipeline)
         {
         }
 
@@ -41,13 +43,30 @@ namespace nbl
                     }
                     ImGui::EndCombo();
                 }
+
+                const auto rmStr = toString(mHairPipeline->getRenderingMode());
+                const char* rmPreviewValue = rmStr.c_str();
+                if (ImGui::BeginCombo("Rendering Mode", rmPreviewValue))
+                {
+                    for (const auto& renderingMode : getHairRenderingModes())
+                    {
+                        const auto rmCurrentStr = toString(renderingMode);
+                        const auto isSelected = rmStr == rmCurrentStr;
+                        if (ImGui::Selectable(rmCurrentStr.c_str(), isSelected))
+                        {
+                            mHairPipeline->setRenderingMode(renderingMode);
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
             }
             ImGui::End();
         }
 
     private:
         const std::vector<std::unique_ptr<HairModel>>& mHairModels;
-        HairModel** pActiveModel;
+        HairModel**                                    pActiveModel;
+        HairPipeline*                                  mHairPipeline;
     };
 
     App::App(const AppCreateInfo& createInfo)
@@ -71,7 +90,7 @@ namespace nbl
 
         mHairPipeline = std::make_unique<HairPipeline>(mRHI.get(), mSceneDescriptor.get());
 
-        mUI->addComponent(std::make_unique<HairSelectorComponent>(mHairModels, &mActiveHairModel));
+        mUI->addComponent(std::make_unique<HairSelectorComponent>(mHairModels, &mActiveHairModel, mHairPipeline.get()));
     }
 
     void App::run()

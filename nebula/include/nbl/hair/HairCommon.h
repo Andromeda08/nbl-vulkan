@@ -33,6 +33,12 @@ namespace nbl
         throw std::invalid_argument("Unknown HairRenderingMode");
     }
 
+    constexpr std::vector<HairRenderingMode> getHairRenderingModes() noexcept
+    {
+        using enum HairRenderingMode;
+        return { Normal, DebugQuads, DebugStrands, DebugStrandlets };
+    }
+
     // Basic Hair vertex data
     struct HairVertex
     {

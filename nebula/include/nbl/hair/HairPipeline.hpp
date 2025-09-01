@@ -9,10 +9,10 @@
 #include <nbl/RenderPass.hpp>
 #include <nbl/VulkanRHI.hpp>
 
+#include "HairModel.hpp"
+
 namespace nbl
 {
-    class HairModel;
-
     struct Frame;
 
     struct PushConstant
@@ -50,14 +50,20 @@ namespace nbl
         explicit HairPipeline(VulkanRHI* pRHI, Descriptor* pSceneDescriptor);
 
         void renderHairModel(
-            const HairModel* pHairModel,
-            const CommandList*     pCommandList,
-            const Frame&     frameInfo) const;
+            const HairModel*    pHairModel,
+            const CommandList*  pCommandList,
+            const Frame&        frameInfo) const;
+
+        void setRenderingMode(HairRenderingMode renderingMode);
+        HairRenderingMode getRenderingMode() const { return mRenderingMode; }
 
     private:
+        HairRenderingMode           mRenderingMode = HairRenderingMode::Normal;
+
         std::unique_ptr<Image>      mDepthBuffer;
         std::unique_ptr<RenderPass> mRenderPass;
         std::unique_ptr<Pipeline>   mPipeline;
+        std::unique_ptr<Pipeline>   mDebugPipeline;
 
         Descriptor*                 mDescriptor;
 

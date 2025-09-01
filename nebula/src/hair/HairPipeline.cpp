@@ -4,7 +4,6 @@
 #include "Pipeline.hpp"
 #include "RenderPass.hpp"
 #include "VulkanRHI.hpp"
-#include "hair/HairModel.hpp"
 
 namespace nbl
 {
@@ -74,6 +73,27 @@ namespace nbl
             .debugName              = "Hair",
             .pDevice                = mRHI->getDevice(),
         });
+
+        mDebugPipeline = Pipeline::createPipeline({
+            .pushConstantRanges     = { PushConstant::getPushConstantRange() },
+            .descriptorSetLayouts   = { mDescriptor->getLayout() },
+            .shaderCreateInfos      = {
+                { "nblHair.task.spv", vk::ShaderStageFlagBits::eTaskEXT  },
+                { "nblHairDebug.mesh.spv", vk::ShaderStageFlagBits::eMeshEXT  },
+                { "nblHairDebug.frag.spv", vk::ShaderStageFlagBits::eFragment },
+            },
+            .pipelineType           = PipelineType::Graphics,
+            .graphicsPipelineState  = GraphicsPipelineStateInfo({
+                .attachmentStates = { PipelineUtils::makeColorBlendAttachmentState() }
+            })
+            .setCullMode(vk::CullModeFlagBits::eNone)
+            .configure([&](GraphicsPipelineStateInfo& info){
+                // info.depthStencilState.setDepthTestEnable(false);
+            }),
+            .pRenderPass            = mRenderPass.get(),
+            .debugName              = "Hair",
+            .pDevice                = mRHI->getDevice(),
+        });
     }
 
     void HairPipeline::renderHairModel(const HairModel* pHairModel, const CommandList* pCommandList, const Frame& frameInfo) const
@@ -93,8 +113,9 @@ namespace nbl
         });
 
         mRenderPass->execute(pCommandList->handle(), [&](const vk::CommandBuffer& commandBuffer) -> void {
-            mPipeline->bind(commandBuffer);
-            mPipeline->bindDescriptorSet(commandBuffer, mDescriptor->getSet(frameInfo.currentFrame));
+            const auto* pipeline = mRenderingMode == HairRenderingMode::Normal ? mPipeline.get() : mDebugPipeline.get();
+            pipeline->bind(commandBuffer);
+            pipeline->bindDescriptorSet(commandBuffer, mDescriptor->getSet(frameInfo.currentFrame));
 
             const auto [addrVertex, addrStrandDesc] = pHairModel->getBufferAddresses();
             const PushConstant pushConstant = {
@@ -103,16 +124,21 @@ namespace nbl
                 .hairSpecular     = pHairModel->mSpecular,
                 .vertexCount      = pHairModel->getVertexCount(),
                 .strandCount      = pHairModel->getStrandCount(),
-                .renderMode       = static_cast<int32_t>(pHairModel->mRenderingMode),
+                .renderMode       = static_cast<int32_t>(mRenderingMode),
                 ._pad0            = -1,
                 .vertexBuffer     = addrVertex,
                 .strandDescBuffer = addrStrandDesc,
             };
-            mPipeline->pushConstants<PushConstant>(commandBuffer, PushConstant::sShaderStages, 0, &pushConstant);
+            pipeline->pushConstants<PushConstant>(commandBuffer, PushConstant::sShaderStages, 0, &pushConstant);
 
             pHairModel->render(commandBuffer);
         });
 
         pCommandList->handle().endDebugUtilsLabelEXT();
+    }
+
+    void HairPipeline::setRenderingMode(const HairRenderingMode renderingMode)
+    {
+        mRenderingMode = renderingMode;
     }
 }
