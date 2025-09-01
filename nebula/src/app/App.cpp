@@ -59,6 +59,9 @@ namespace nbl
                     }
                     ImGui::EndCombo();
                 }
+
+                ImGui::Checkbox("Enable Group Size Override", &(*pActiveModel)->mEnableOverride);
+                ImGui::SliderInt("Group Size", &(*pActiveModel)->mGroupSizeOverride, 0, (*pActiveModel)->mGroupSize);
             }
             ImGui::End();
         }

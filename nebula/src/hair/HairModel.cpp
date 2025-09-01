@@ -151,8 +151,14 @@ namespace nbl
 
     void HairModel::render(const vk::CommandBuffer& commandBuffer) const
     {
-
-        commandBuffer.drawMeshTasksEXT(mGroupSize, 1, 1);
+        if (mEnableOverride)
+        {
+            commandBuffer.drawMeshTasksEXT(mGroupSizeOverride, 1, 1);
+        }
+        else
+        {
+            commandBuffer.drawMeshTasksEXT(mGroupSize, 1, 1);
+        }
     }
 
 }

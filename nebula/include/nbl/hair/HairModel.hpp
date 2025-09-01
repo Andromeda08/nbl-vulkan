@@ -60,6 +60,7 @@ namespace nbl
 
         friend class HairPipeline;
         friend class HairUIComponent;
+        friend class HairSelectorComponent;
 
         // ================================
         // Hair Meta- and Geometry Data
