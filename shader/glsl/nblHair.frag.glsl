@@ -75,6 +75,5 @@ void main()
     vec3 V = normalize(camera.eye.xyz - IN.world_position.xyz);
 
     vec3 color = kajiya_kay(hair_constants.hair_diffuse.xyz, hair_constants.hair_specular.xyz, 16.0, T, L, V);
-    // out_color = vec4(color, 1.0);
-    out_color = vec4(1.0);
+    out_color = vec4(color, 1.0);
 }

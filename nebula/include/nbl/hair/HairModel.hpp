@@ -47,6 +47,8 @@ namespace nbl
 
         Buffer* getStrandDescriptionsBuffer() const { return mStrandDescriptionsBuffer.get(); }
 
+        const std::string& getModelName() const { return mName; }
+
     private:
         void loadFile();
 

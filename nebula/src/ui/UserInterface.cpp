@@ -6,10 +6,10 @@ namespace nbl
 {
     UserInterface::UserInterface(const UserInterfaceCreateInfo& createInfo)
     {
-        // mImGuiRenderer = ImGuiRenderer::createImGuiRenderer({
-        //     .fontPath = createInfo.fontPath,
-        //     .pWindow = createInfo.pWindow,
-        // });
+        mImGuiRenderer = ImGuiRenderer::createImGuiRenderer({
+            .fontPath = createInfo.fontPath,
+            .pWindow = createInfo.pWindow,
+        });
     }
 
     void UserInterface::update()
@@ -22,12 +22,12 @@ namespace nbl
 
     void UserInterface::draw(const CommandList* commandList, const Frame& currentFrame) const
     {
-        // mImGuiRenderer->renderImGui(commandList->handle(), currentFrame, [&]() {
-        //     for (auto&& component : mComponents)
-        //     {
-        //         component->draw();
-        //     }
-        // });
+        mImGuiRenderer->renderImGui(commandList->handle(), currentFrame, [&]() {
+            for (auto&& component : mComponents)
+            {
+                component->draw();
+            }
+        });
     }
 
     void UserInterface::addComponent(std::unique_ptr<UIComponent>&& component)

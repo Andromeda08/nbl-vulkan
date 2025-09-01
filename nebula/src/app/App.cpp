@@ -3,9 +3,53 @@
 #include <fmt/format.h>
 
 #include "Barrier.hpp"
+#include "imgui.h"
+#include "Nebula.hpp"
 
 namespace nbl
 {
+    class HairSelectorComponent : public UIComponent
+    {
+    public:
+        HairSelectorComponent(
+            const std::vector<std::unique_ptr<HairModel>>& hairModels,
+            HairModel** activeModel)
+        : UIComponent()
+        , mHairModels(hairModels)
+        , pActiveModel(activeModel)
+        {
+        }
+
+        ~HairSelectorComponent() override = default;
+
+        void update() override {}
+
+        void draw() override
+        {
+            ImGui::Begin("Hair Models");
+            {
+                const char* previewValue = (*pActiveModel)->getModelName().c_str();
+                if (ImGui::BeginCombo("Visible Model", previewValue))
+                {
+                    for (const auto& hairModel : mHairModels)
+                    {
+                        const auto isSelected = hairModel->getModelName() == (*pActiveModel)->getModelName();
+                        if (ImGui::Selectable(hairModel->getModelName().c_str(), isSelected))
+                        {
+                            *pActiveModel = hairModel.get();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+            }
+            ImGui::End();
+        }
+
+    private:
+        const std::vector<std::unique_ptr<HairModel>>& mHairModels;
+        HairModel** pActiveModel;
+    };
+
     App::App(const AppCreateInfo& createInfo)
     {
         mWindow = wsi::Window::createWindow(createInfo.windowInfo);
@@ -14,17 +58,20 @@ namespace nbl
             .pWindow       = mWindow.get(),
             .configuration = createInfo.rhiInfo,
         });
+        gRHI = mRHI.get();
 
-        // mUI = UserInterface::createUserInterface({
-        //     .fontPath = "JetBrainsMono-Regular.ttf",
-        //     .pWindow  = mWindow.get(),
-        // });
+        mUI = UserInterface::createUserInterface({
+            .fontPath = "JetBrainsMono-Regular.ttf",
+            .pWindow  = mWindow.get(),
+        });
 
         createCameraResources();
 
         loadHairModels();
 
         mHairPipeline = std::make_unique<HairPipeline>(mRHI.get(), mSceneDescriptor.get());
+
+        mUI->addComponent(std::make_unique<HairSelectorComponent>(mHairModels, &mActiveHairModel));
     }
 
     void App::run()
@@ -33,20 +80,20 @@ namespace nbl
         {
             glfwPollEvents();
 
-            // if (!mUI->wantCaptureKeyboard())
-            // {
+            if (!mUI->wantCaptureKeyboard())
+            {
                 mCamera->registerKeys(mWindow->getHandle());
-            // }
-            // if (!mUI->wantCaptureMouse())
-            // {
+            }
+            if (!mUI->wantCaptureMouse())
+            {
                 mCamera->registerMouse(mWindow->getHandle());
-            // }
+            }
 
             Frame frameInfo = mRHI->beginFrame();
             const uint32_t currentFrame = frameInfo.currentFrame;
             auto* commandList = mRHI->getGraphicsQueue()->getCommandList(currentFrame);
 
-            // mUI->update();
+            mUI->update();
 
             const auto cameraData = mCamera->getCameraData();
             mUniformBuffer[currentFrame]->setData(&cameraData, sizeof(CameraData), 0);
@@ -56,6 +103,8 @@ namespace nbl
                 mRHI->getSwapchain()->setScissorViewport(commandList->handle());
 
                 mHairPipeline->renderHairModel(mActiveHairModel, commandList, frameInfo);
+
+                mUI->draw(commandList, frameInfo);
 
                 Barrier::transitionImageLayout({
                     .commandBuffer = commandList->handle(),
@@ -125,8 +174,8 @@ namespace nbl
     void App::loadHairModels()
     {
         static std::vector hairModels = {
-            /*"wCurly.hair", "wStraight.hair", "wWavy.hair", "wWavyThin.hair"*/
-            "wWavy.hair"
+            "wWavy.hair", "wCurly.hair", "wStraight.hair", "wWavyThin.hair"
+            // "wWavy.hair"
         };
 
         for (const char* model : hairModels)

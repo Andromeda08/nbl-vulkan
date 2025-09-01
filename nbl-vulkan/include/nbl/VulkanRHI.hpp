@@ -82,6 +82,7 @@ namespace nbl
         // Getter Methods for GPU Objects
         // ================================
 
+        vk::Instance  getInstance()      const { return mInstance;            }
         Device*       getDevice()        const { return mDevice.get();        }
         CommandQueue* getGraphicsQueue() const { return mGraphicsQueue.get(); }
         CommandQueue* getComputeQueue()  const { return mComputeQueue.get();  }

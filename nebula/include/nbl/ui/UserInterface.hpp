@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 #include <nbl/VulkanRHI.hpp>
+
+#include "ImGuiRenderer.hpp"
 #include "UIComponent.hpp"
 #include "wsi/Window.hpp"
 
@@ -32,6 +34,6 @@ namespace nbl
 
     private:
         std::vector<std::unique_ptr<UIComponent>> mComponents;
-        // std::unique_ptr<ImGuiRenderer>            mImGuiRenderer;
+        std::unique_ptr<ImGuiRenderer>            mImGuiRenderer;
     };
 }

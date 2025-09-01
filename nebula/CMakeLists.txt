@@ -20,6 +20,7 @@ add_executable(Nebula
 
     include/nbl/ui/UIComponent.hpp
     src/ui/UserInterface.cpp                include/nbl/ui/UserInterface.hpp
+    src/ui/ImGuiRenderer.cpp                include/nbl/ui/ImGuiRenderer.hpp
 
     include/nbl/hair/HairCommon.h
     src/hair/HairModel.cpp                  include/nbl/hair/HairModel.hpp
